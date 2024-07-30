@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -70,33 +70,37 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // Navigation and Hilt
-    implementation("androidx.navigation:navigation-compose:2.8.0-beta06")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-
-    // Correct kapt usage for Hilt
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.androidx.hilt.compiler)
 
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Image Loading
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation(libs.coil.compose)
+
+    // Retrofit
+    implementation(libs.squareup.retrofit)
+
+    // Gson Converter (for JSON)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 
     // Testing libraries
-    testImplementation("io.mockk:mockk:1.12.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
