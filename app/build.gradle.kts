@@ -54,18 +54,12 @@ android {
 }
 
 dependencies {
-
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.foundation)
@@ -96,4 +90,14 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
+    debugImplementation(libs.leakcanary)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(composeBom)
 }
