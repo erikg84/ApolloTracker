@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.apollotracker.R
+import com.example.apollotracker.view.components.ApolloTrackerLogoWithText
 import com.example.apollotracker.viewmodel.SplashViewModel
 
 @Composable
@@ -55,25 +56,10 @@ fun SplashScreen() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(R.drawable.logo)
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build(),
-                    contentDescription = "App Logo",
-                    modifier = Modifier.size(120.dp),
-                    contentScale = ContentScale.Fit
-                )
+                ApolloTrackerLogoWithText()
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "CryptoTracker",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                
                 Text(
                     text = "Track Your Cryptocurrency Prices Instantly",
                     fontSize = 16.sp,
