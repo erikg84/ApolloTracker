@@ -4,7 +4,7 @@ import com.example.apollotracker.di.IODispatcher
 import com.example.apollotracker.model.AltCoinResponseItem
 import com.example.apollotracker.model.CoinPaprikaResponse
 import com.example.apollotracker.model.HistoricalDataPoint
-import com.example.apollotracker.remote.Resource.Companion.toResource
+import com.example.apollotracker.remote.Resource.Companion.fetchCatching
 import com.example.apollotracker.util.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,19 +26,19 @@ class CoinRepository @Inject constructor(
 
     suspend fun getBitcoinInfo(): Resource<CoinPaprikaResponse> {
         return withContext(ioDispatcher) {
-            coinPaprikaApi.getBitcoinInfo(currency).toResource()
+            fetchCatching { coinPaprikaApi.getBitcoinInfo(currency) }
         }
     }
 
     suspend fun getAltcoinInfo(): Resource<List<AltCoinResponseItem>> {
         return withContext(ioDispatcher) {
-            coinPaprikaApi.getAltcoinInfo(currency).toResource()
+            fetchCatching { coinPaprikaApi.getAltcoinInfo(currency) }
         }
     }
 
     suspend fun getHistoricalInfo(coinId: String, startDate: String = "2023-08-06", interval: String = "1d"): Resource<List<HistoricalDataPoint>> {
         return withContext(ioDispatcher) {
-            coinPaprikaApi.getHistoricalInfo(coinId, startDate, interval).toResource()
+            fetchCatching { coinPaprikaApi.getHistoricalInfo(coinId, startDate, interval) }
         }
     }
 

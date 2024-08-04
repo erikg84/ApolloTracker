@@ -8,7 +8,7 @@ sealed class Resource<T>(open val data: T? = null) {
     class Failure<T>(override val data: T? = null, val error: Throwable) : Resource<T>(data)
 
     companion object {
-        fun <T> Response<T>.toResource(): Resource<T> {
+        private fun <T> Response<T>.toResource(): Resource<T> {
             return try {
                 if (this.isSuccessful) {
                     this.body()?.let {
@@ -19,6 +19,14 @@ sealed class Resource<T>(open val data: T? = null) {
                 }
             } catch (e: Exception) {
                 Failure(null, Throwable(e.message ?: "Error handling response"))
+            }
+        }
+
+        suspend fun <T> fetchCatching(apiCall: suspend () -> Response<T>): Resource<T> {
+            return try {
+                apiCall().toResource()
+            } catch (e: Exception) {
+                Failure(null, e)
             }
         }
     }

@@ -32,6 +32,6 @@ class SplashViewModel @Inject constructor(
     }
 
     companion object {
-        const val SPLASH_SCREEN_DURATION = 2000L
+        private const val SPLASH_SCREEN_DURATION = 2000L
     }
 }

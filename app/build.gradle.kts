@@ -52,6 +52,9 @@ android {
             excludes += "META-INF/LICENSE.md"
         }
     }
+    packagingOptions {
+        exclude("META-INF/LICENSE-notice.md")
+    }
 }
 
 dependencies {
@@ -97,5 +100,10 @@ dependencies {
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(composeBom)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
 }

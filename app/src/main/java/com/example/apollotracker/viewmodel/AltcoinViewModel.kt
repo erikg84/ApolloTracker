@@ -1,6 +1,7 @@
 package com.example.apollotracker.viewmodel
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apollotracker.model.AltCoin
@@ -28,7 +29,8 @@ class AltcoinViewModel @Inject constructor(
     private val statefulStore: ModelStore<ViewState> = StatefulStore(ViewState(), viewModelScope)
     val viewState = statefulStore.state
 
-    private val timer = Timer()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var timer = Timer()
 
     init {
         getAltcoinInfo()
@@ -87,7 +89,6 @@ class AltcoinViewModel @Inject constructor(
     private fun startAutoRefresh() {
         timer.schedule(object : TimerTask() {
             override fun run() {
-                Log.d(TAG, "Auto-refreshing Altcoin data...")
                 viewModelScope.launch {
                     getAltcoinInfo()
                 }
