@@ -67,5 +67,3 @@ class StatefulStore<T>(initialValue: T, private val scope: CoroutineScope) : Mod
         }
     }
 }
-
-

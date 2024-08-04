@@ -49,6 +49,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/LICENSE.md"
         }
     }
 }
@@ -85,14 +86,11 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.converter.moshi)
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.mpandroidchart)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chucker.no.op)
-    debugImplementation(libs.leakcanary)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

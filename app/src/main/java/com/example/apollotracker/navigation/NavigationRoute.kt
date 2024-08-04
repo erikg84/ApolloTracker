@@ -3,7 +3,20 @@ package com.example.apollotracker.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface NavigationRoute
+sealed interface NavigationRoute {
+    val isSplash: Boolean get() = this is Splash
+    val route: String get() = this::class.qualifiedName.orEmpty()
+    companion object {
+        fun fromString(route: String?): NavigationRoute = when (route) {
+            Splash.route -> Splash
+            Main.route -> Main
+            Altcoin.route -> Altcoin
+            Settings.route -> Settings
+            Graph.route -> Graph
+            else -> Main
+        }
+    }
+}
 
 @Serializable
 data object Splash : NavigationRoute
@@ -18,4 +31,4 @@ data object Altcoin : NavigationRoute
 data object Settings : NavigationRoute
 
 @Serializable
-data object Back : NavigationRoute
+data object Graph : NavigationRoute

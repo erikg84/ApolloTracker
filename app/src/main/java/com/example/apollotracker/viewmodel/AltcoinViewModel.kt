@@ -3,8 +3,8 @@ package com.example.apollotracker.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apollotracker.model.CoinPaprikaResponse
-import com.example.apollotracker.model.Quote
+import com.example.apollotracker.model.AltCoin
+import com.example.apollotracker.model.AltCoinResponseItem
 import com.example.apollotracker.navigation.Graph
 import com.example.apollotracker.navigation.Router
 import com.example.apollotracker.remote.CoinRepository
@@ -19,7 +19,7 @@ import java.util.TimerTask
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class AltcoinViewModel @Inject constructor(
     private val coinRepository: CoinRepository,
     private val sharedPreferencesManager: SharedPreferencesManager,
     private val router: Router
@@ -31,22 +31,22 @@ class MainViewModel @Inject constructor(
     private val timer = Timer()
 
     init {
-        getBitcoinInfo()
+        getAltcoinInfo()
         startAutoRefresh()
     }
 
     fun onAction(action: Action) {
         when (action) {
-            is Action.GetBitCoin -> getBitcoinInfo()
+            is Action.GetAltcoin -> getAltcoinInfo()
             is Action.StopRefresh -> stopAutoRefresh()
-            is Action.ViewGraph -> navigateToGraph()
+            is Action.ViewGraph -> navigateToGraph(action.coinId)
         }
     }
 
-    private fun getBitcoinInfo() {
+    private fun getAltcoinInfo() {
         setLoadingState(true)
         viewModelScope.launch {
-            when (val result = coinRepository.getBitcoinInfo()) {
+            when (val result = coinRepository.getAltcoinInfo()) {
                 is Resource.Success -> handleSuccess(result.data)
                 is Resource.Failure -> handleError(result.error)
                 else -> Unit
@@ -59,12 +59,18 @@ class MainViewModel @Inject constructor(
         statefulStore.process { oldState -> oldState.copy(isLoading = false, isError = true) }
     }
 
-    private fun handleSuccess(coinPaprikaResponse: CoinPaprikaResponse) {
+    private fun handleSuccess(altcoinInfo: List<AltCoinResponseItem>) {
         statefulStore.process { oldState ->
             oldState.copy(
                 isLoading = false,
-                bitcoinInfo = coinPaprikaResponse,
-                quote = coinPaprikaResponse.quotes?.get(sharedPreferencesManager.selectedCurrency.code)
+                altcoins = altcoinInfo.map {
+                    AltCoin(
+                        id = it.id,
+                        name = it.name,
+                        symbol = it.symbol,
+                        price = it.quotes?.getCurrency(sharedPreferencesManager.selectedCurrency)?.price
+                    )
+                }
             )
         }
     }
@@ -73,17 +79,17 @@ class MainViewModel @Inject constructor(
         statefulStore.process { it.copy(isLoading = isLoading) }
     }
 
-    private fun navigateToGraph() {
-        coinRepository.setCurrentCoinId(viewState.value.bitcoinInfo.id.orEmpty())
+    private fun navigateToGraph(coinId: String?) {
+        coinRepository.setCurrentCoinId(coinId.orEmpty())
         router.navigateTo(Graph)
     }
 
     private fun startAutoRefresh() {
         timer.schedule(object : TimerTask() {
             override fun run() {
-                Log.d(TAG, "Auto-refreshing Bitcoin data...")
+                Log.d(TAG, "Auto-refreshing Altcoin data...")
                 viewModelScope.launch {
-                    getBitcoinInfo()
+                    getAltcoinInfo()
                 }
             }
         }, DELAY, REFRESH_INTERVAL)
@@ -96,18 +102,17 @@ class MainViewModel @Inject constructor(
     data class ViewState(
         val isLoading: Boolean = false,
         val isError: Boolean = false,
-        val bitcoinInfo: CoinPaprikaResponse = CoinPaprikaResponse(),
-        val quote: Quote? = null
+        val altcoins: List<AltCoin> = emptyList()
     )
 
     sealed interface Action {
-        data object GetBitCoin : Action
+        data object GetAltcoin : Action
         data object StopRefresh : Action
-        data object ViewGraph : Action
+        data class ViewGraph(val coinId: String?) : Action
     }
 
     companion object {
-        private val TAG = MainViewModel::class.java.simpleName
+        private val TAG = AltcoinViewModel::class.java.simpleName
         private const val REFRESH_INTERVAL = 60000L
         private const val DELAY = 0L
     }
