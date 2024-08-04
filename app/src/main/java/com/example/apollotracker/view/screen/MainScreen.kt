@@ -51,8 +51,8 @@ private fun BitcoinInfo(
 ) {
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAction(MainViewModel.Action.GetBitCoin) }) {
-                Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            FloatingActionButton(onClick = { onAction(MainViewModel.Action.GetBitCoin) }, backgroundColor = Color.Blue) {
+                Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.White)
             }
         },
         content = { padding ->

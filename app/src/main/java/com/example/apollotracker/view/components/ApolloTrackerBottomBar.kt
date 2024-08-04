@@ -15,7 +15,10 @@ import com.example.apollotracker.viewmodel.ApolloTrackerViewModel
 fun ApolloTrackerBottomBar(
     onAction: (ApolloTrackerViewModel.Action) -> Unit
 ) {
-    BottomAppBar {
+    BottomAppBar(
+        backgroundColor = Color(0xFF121212),
+        contentColor = Color.White
+    ) {
         TextButton(
             onClick = { onAction(ApolloTrackerViewModel.Action.Navigate(Main)) },
             modifier = Modifier.weight(1f)

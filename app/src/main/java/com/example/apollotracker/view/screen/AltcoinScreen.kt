@@ -2,19 +2,10 @@ package com.example.apollotracker.view.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
@@ -48,19 +39,19 @@ fun AltcoinScreen() {
 private fun AltCoinInfo(altcoinInfo: List<AltCoin>, onAction: (AltcoinViewModel.Action) -> Unit) {
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAction(AltcoinViewModel.Action.GetAltcoin) }) {
-                Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            FloatingActionButton(onClick = { onAction(AltcoinViewModel.Action.GetAltcoin) }, backgroundColor = Color.Blue) {
+                Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.White)
             }
         },
         content = { padding ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(0.dp)
             ) {
                 items(altcoinInfo) { altCoin ->
                     AltCoinItem(altCoin, onAction)
+                    Divider(color = Color.LightGray, thickness = 1.dp)
                 }
             }
         }
@@ -72,30 +63,30 @@ private fun AltCoinItem(altCoin: AltCoin, onAction: (AltcoinViewModel.Action) ->
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(0.dp),
         elevation = 4.dp,
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = Color.White
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(MaterialTheme.colors.primary)
+                .background(Color.White)
         ) {
             with(altCoin) {
                 Text(
                     text = "Name: $name",
                     style = MaterialTheme.typography.h6,
-                    color = Color.White
+                    color = Color.Black
                 )
                 Text(
                     text = "Symbol: $symbol",
                     style = MaterialTheme.typography.body1,
-                    color = Color.White
+                    color = Color.Black
                 )
                 Text(
                     text = "Price: $$price",
                     style = MaterialTheme.typography.body1,
-                    color = Color.White
+                    color = Color.Black
                 )
                 Text(
                     modifier = Modifier
@@ -103,7 +94,7 @@ private fun AltCoinItem(altCoin: AltCoin, onAction: (AltcoinViewModel.Action) ->
                         .clickable { onAction(AltcoinViewModel.Action.ViewGraph(id)) }
                     ,
                     text = "View Graph",
-                    style = MaterialTheme.typography.body1.copy(color = Color.Yellow)
+                    style = MaterialTheme.typography.body1.copy(color = Color.Blue)
                 )
             }
         }
