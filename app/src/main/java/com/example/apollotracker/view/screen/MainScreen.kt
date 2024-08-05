@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apollotracker.model.CoinPaprikaResponse
@@ -50,6 +51,7 @@ private fun BitcoinInfo(
     onAction: (MainViewModel.Action) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.testTag("MainScreen"),
         floatingActionButton = {
             FloatingActionButton(onClick = { onAction(MainViewModel.Action.GetBitCoin) }, backgroundColor = Color.Blue) {
                 Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.White)

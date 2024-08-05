@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apollotracker.model.AltCoin
@@ -38,6 +39,7 @@ fun AltcoinScreen() {
 @Composable
 private fun AltCoinInfo(altcoinInfo: List<AltCoin>, onAction: (AltcoinViewModel.Action) -> Unit) {
     Scaffold(
+        modifier =Modifier.testTag("AltcoinScreen"),
         floatingActionButton = {
             FloatingActionButton(onClick = { onAction(AltcoinViewModel.Action.GetAltcoin) }, backgroundColor = Color.Blue) {
                 Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.White)
@@ -46,11 +48,12 @@ private fun AltCoinInfo(altcoinInfo: List<AltCoin>, onAction: (AltcoinViewModel.
         content = { padding ->
             LazyColumn(
                 modifier = Modifier
+                    .testTag("AltcoinList")
                     .fillMaxSize()
                     .padding(0.dp)
             ) {
-                items(altcoinInfo) { altCoin ->
-                    AltCoinItem(altCoin, onAction)
+                itemsIndexed(altcoinInfo) { index, altCoin ->
+                    AltCoinItem(altCoin, index, onAction)
                     Divider(color = Color.LightGray, thickness = 1.dp)
                 }
             }
@@ -59,9 +62,10 @@ private fun AltCoinInfo(altcoinInfo: List<AltCoin>, onAction: (AltcoinViewModel.
 }
 
 @Composable
-private fun AltCoinItem(altCoin: AltCoin, onAction: (AltcoinViewModel.Action) -> Unit) {
+private fun AltCoinItem(altCoin: AltCoin, index: Int, onAction: (AltcoinViewModel.Action) -> Unit) {
     Card(
         modifier = Modifier
+            .testTag("AltCoinItem$index")
             .fillMaxWidth()
             .padding(0.dp),
         elevation = 4.dp,
@@ -90,9 +94,9 @@ private fun AltCoinItem(altCoin: AltCoin, onAction: (AltcoinViewModel.Action) ->
                 )
                 Text(
                     modifier = Modifier
+                        .testTag("ViewGraphLinkAltCoinItem$index")
                         .padding(top = 16.dp)
-                        .clickable { onAction(AltcoinViewModel.Action.ViewGraph(id)) }
-                    ,
+                        .clickable { onAction(AltcoinViewModel.Action.ViewGraph(id)) },
                     text = "View Graph",
                     style = MaterialTheme.typography.body1.copy(color = Color.Blue)
                 )

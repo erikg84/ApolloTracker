@@ -27,9 +27,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -40,6 +40,4 @@ object NetworkModule {
     fun provideCoinPaprikaApi(retrofit: Retrofit): CoinPaprikaApi {
         return retrofit.create(CoinPaprikaApi::class.java)
     }
-
-    private const val BASE_URL = "https://api.coinpaprika.com/"
 }

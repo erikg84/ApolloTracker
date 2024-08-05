@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apollotracker.model.Currency
@@ -26,6 +27,7 @@ fun SettingsScreen() {
 
     Column(
         modifier = Modifier
+            .testTag("SettingsScreen")
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -42,6 +44,7 @@ fun SettingsScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
+                    modifier = Modifier.testTag(currency.code),
                     selected = viewState.selectedCurrency == currency,
                     onClick = { viewModel.onAction(SettingsViewModel.Action.ChangeCurrency(currency)) },
                     colors = RadioButtonDefaults.colors(

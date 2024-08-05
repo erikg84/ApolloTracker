@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apollotracker.viewmodel.GraphViewModel
@@ -51,7 +52,11 @@ private fun HistoricalDataGraph(historicalDataPoints: List<HistoricalDataPoint>)
     }
     val lineData = LineData(dataSet)
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .testTag("GraphScreen")
+            .fillMaxSize()
+    ) {
         AndroidView(
             factory = { context ->
                 LineChart(context).apply {

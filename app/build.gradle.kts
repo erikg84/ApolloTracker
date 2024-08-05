@@ -17,7 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.apollotracker.ApolloTrackerTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -106,6 +106,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.okhttp3.idling.resource)
+    androidTestImplementation(libs.okhttp3.mockwebserver)
     kspAndroidTest(libs.hilt.compiler)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
