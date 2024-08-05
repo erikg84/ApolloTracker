@@ -18,7 +18,7 @@ class MockServerDispatcher : Dispatcher() {
                     .setResponseCode(200)
                     .setBody(FileReader.readStringFromFile("altcoin.json"))
             }
-            "/v1/tickers/btc-bitcoin/historical?start=2023-08-06&interval=1d" -> {
+            "/v1/tickers/btc-bitcoin/historical?start=2024-01-02&interval=1d" -> {
                 MockResponse()
                     .setResponseCode(200)
                     .setBody(FileReader.readStringFromFile("historical.json"))
