@@ -36,7 +36,7 @@ class CoinRepository @Inject constructor(
         }
     }
 
-    suspend fun getHistoricalInfo(coinId: String, startDate: String = "2023-08-06", interval: String = "1d"): Resource<List<HistoricalDataPoint>> {
+    suspend fun getHistoricalInfo(coinId: String, startDate: String = "2024-01-02", interval: String = "1d"): Resource<List<HistoricalDataPoint>> {
         return withContext(ioDispatcher) {
             fetchCatching { coinPaprikaApi.getHistoricalInfo(coinId, startDate, interval) }
         }
