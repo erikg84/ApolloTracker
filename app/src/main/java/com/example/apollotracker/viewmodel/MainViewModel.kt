@@ -29,12 +29,8 @@ class MainViewModel @Inject constructor(
     private val statefulStore: ModelStore<ViewState> = StatefulStore(ViewState(), viewModelScope)
     val viewState = statefulStore.state
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    var timer = Timer()
-
     init {
-        getBitcoinInfo()
-        startAutoRefresh()
+        pollBitcoinInfo()
     }
 
     fun onAction(action: Action) {
@@ -45,14 +41,27 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun pollBitcoinInfo() {
+        setLoadingState(true)
+        viewModelScope.launch {
+            coinRepository.startBitcoinPolling(REFRESH_INTERVAL).collect { resource ->
+                handleResource(resource)
+            }
+        }
+    }
+
     private fun getBitcoinInfo() {
         setLoadingState(true)
         viewModelScope.launch {
-            when (val result = coinRepository.getBitcoinInfo()) {
-                is Resource.Success -> handleSuccess(result.data)
-                is Resource.Failure -> handleError(result.error)
-                else -> Unit
-            }
+            handleResource(coinRepository.getBitcoinInfo())
+        }
+    }
+
+    private fun handleResource(result: Resource<CoinPaprikaResponse>) {
+        when (result) {
+            is Resource.Success -> handleSuccess(result.data)
+            is Resource.Failure -> handleError(result.error)
+            else -> Unit
         }
     }
 
@@ -80,18 +89,8 @@ class MainViewModel @Inject constructor(
         router.navigateTo(Graph)
     }
 
-    private fun startAutoRefresh() {
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                viewModelScope.launch {
-                    getBitcoinInfo()
-                }
-            }
-        }, DELAY, REFRESH_INTERVAL)
-    }
-
     private fun stopAutoRefresh() {
-        timer.cancel()
+        coinRepository.stopBitcoinPolling()
     }
 
     data class ViewState(
@@ -110,6 +109,5 @@ class MainViewModel @Inject constructor(
     companion object {
         private val TAG = MainViewModel::class.java.simpleName
         private const val REFRESH_INTERVAL = 60000L
-        private const val DELAY = 0L
     }
 }

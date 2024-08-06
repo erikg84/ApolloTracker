@@ -16,7 +16,6 @@ import com.example.apollotracker.util.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Timer
-import java.util.TimerTask
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,8 +32,7 @@ class AltcoinViewModel @Inject constructor(
     var timer = Timer()
 
     init {
-        getAltcoinInfo()
-        startAutoRefresh()
+        pollAltcoinInfo()
     }
 
     fun onAction(action: Action) {
@@ -45,14 +43,28 @@ class AltcoinViewModel @Inject constructor(
         }
     }
 
+    private fun pollAltcoinInfo() {
+        setLoadingState(true)
+        viewModelScope.launch {
+            coinRepository.startAltcoinPolling(REFRESH_INTERVAL).collect { resource ->
+                setLoadingState(true)
+                handleResource(resource)
+            }
+        }
+    }
+
     private fun getAltcoinInfo() {
         setLoadingState(true)
         viewModelScope.launch {
-            when (val result = coinRepository.getAltcoinInfo()) {
-                is Resource.Success -> handleSuccess(result.data)
-                is Resource.Failure -> handleError(result.error)
-                else -> Unit
-            }
+            handleResource(coinRepository.getAltcoinInfo())
+        }
+    }
+
+    private fun handleResource(result: Resource<List<AltCoinResponseItem>>) {
+        when (result) {
+            is Resource.Success -> handleSuccess(result.data)
+            is Resource.Failure -> handleError(result.error)
+            else -> Unit
         }
     }
 
@@ -86,18 +98,8 @@ class AltcoinViewModel @Inject constructor(
         router.navigateTo(Graph)
     }
 
-    private fun startAutoRefresh() {
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                viewModelScope.launch {
-                    getAltcoinInfo()
-                }
-            }
-        }, DELAY, REFRESH_INTERVAL)
-    }
-
     private fun stopAutoRefresh() {
-        timer.cancel()
+        coinRepository.stopBitcoinPolling()
     }
 
     data class ViewState(
