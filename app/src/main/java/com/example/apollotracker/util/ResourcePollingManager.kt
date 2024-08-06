@@ -2,6 +2,7 @@ package com.example.apollotracker.util
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.example.apollotracker.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,6 +49,7 @@ class ResourcePollingManager @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Error while polling data", e)
             close(e)
         }
     }.flowOn(dispatcher)
@@ -60,5 +62,6 @@ class ResourcePollingManager @Inject constructor(
 
     companion object {
         private const val DEFAULT_POLLING_INTERVAL: Long = 6000L
+        private val TAG = ResourcePollingManager::class.java.simpleName
     }
 }

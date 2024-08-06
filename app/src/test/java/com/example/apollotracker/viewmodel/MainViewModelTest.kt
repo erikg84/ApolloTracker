@@ -62,7 +62,7 @@ class MainViewModelTest {
         val observer = viewModel.viewState.test(this)
 
         with(observer.changes.last()) {
-            Assert.assertFalse(isLoading)
+             Assert.assertFalse(isLoading)
             Assert.assertFalse(isError)
             Assert.assertEquals(bitcoinInfo, bitcoin)
             Assert.assertEquals(quote, Quote(price = 60000.0))
@@ -172,12 +172,9 @@ class MainViewModelTest {
 
         val observer = viewModel.viewState.test(this)
 
-        val timer: Timer = mockk(relaxed = true)
-        viewModel.timer = timer
-
         viewModel.onAction(MainViewModel.Action.StopRefresh)
 
-        verify { timer.cancel() }
+        verify { coinRepository.stopBitcoinPolling() }
 
         observer.cancelAndRemoveRemainingEvents { events ->
             Assert.assertEquals(events, emptyList<MainViewModel.ViewState>())

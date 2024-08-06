@@ -4,6 +4,7 @@ import com.example.apollotracker.model.AltCoinResponseItem
 import com.example.apollotracker.model.CoinPaprikaResponse
 import com.example.apollotracker.model.HistoricalDataPoint
 import com.example.apollotracker.testutil.TestCoroutineRule
+import com.example.apollotracker.util.ResourcePollingManager
 import com.example.apollotracker.util.SharedPreferencesManager
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,8 +24,9 @@ class CoinRepositoryTest {
 
     private val coinPaprikaApi: CoinPaprikaApi = mockk(relaxed = true)
     private val sharedPreferencesManager: SharedPreferencesManager = mockk(relaxed = true)
+    private val resourcePollingManager: ResourcePollingManager = mockk(relaxed = true)
     private val coinRepository: CoinRepository by lazy {
-        CoinRepository(coinPaprikaApi, sharedPreferencesManager, testCoroutineRule.testDispatcher)
+        CoinRepository(coinPaprikaApi, sharedPreferencesManager, resourcePollingManager, testCoroutineRule.testDispatcher)
     }
 
     @Test
