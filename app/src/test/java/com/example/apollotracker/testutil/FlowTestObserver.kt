@@ -29,3 +29,8 @@ fun <T> StateFlow<T>.test(scope: TestScope): FlowTestObserver<T> {
     return FlowTestObserver(scope, this)
 }
 
+@ExperimentalCoroutinesApi
+fun <T> Flow<T>.test(scope: TestScope): FlowTestObserver<T> {
+    return FlowTestObserver(scope, this)
+}
+
