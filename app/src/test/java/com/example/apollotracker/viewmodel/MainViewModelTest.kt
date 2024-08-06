@@ -19,13 +19,13 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.Timer
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
@@ -57,7 +57,7 @@ class MainViewModelTest {
     fun `init should call getBitcoinInfo and handle success`() = runTest {
         val bitcoin = CoinPaprikaResponse(id = "btc-bitcoin", name = "Bitcoin", quotes = mapOf("USD" to Quote(price = 60000.0)))
 
-        coEvery { coinRepository.getBitcoinInfo() } returns Resource.Success(bitcoin)
+        coEvery { coinRepository.startBitcoinPolling(any()) } returns flowOf(Resource.Success(bitcoin))
 
         val observer = viewModel.viewState.test(this)
 
@@ -68,7 +68,7 @@ class MainViewModelTest {
             Assert.assertEquals(quote, Quote(price = 60000.0))
         }
 
-        coVerify { coinRepository.getBitcoinInfo() }
+        coVerify { coinRepository.startBitcoinPolling(any()) }
 
         observer.cancelAndRemoveRemainingEvents { events ->
             Assert.assertEquals(events, emptyList<MainViewModel.ViewState>())
@@ -79,7 +79,7 @@ class MainViewModelTest {
     fun `init should call getBitcoinInfo and should handle error response`() = runTest {
         val error = Throwable("Network Error")
 
-        coEvery { coinRepository.getBitcoinInfo() } returns Resource.Failure(error = error)
+        coEvery { coinRepository.startBitcoinPolling(any()) } returns flowOf(Resource.Failure(error = error))
 
         val observer = viewModel.viewState.test(this)
 
@@ -90,7 +90,7 @@ class MainViewModelTest {
             Assert.assertNull(quote)
         }
 
-        coVerify { coinRepository.getBitcoinInfo() }
+        coVerify { coinRepository.startBitcoinPolling(any()) }
         verify { Log.e(TAG, "Error: $error") }
 
         observer.cancelAndRemoveRemainingEvents { events ->
@@ -151,7 +151,7 @@ class MainViewModelTest {
     fun `onAction { view graph action } should navigate to graph`() = runTest {
         val bitcoin = CoinPaprikaResponse(id = "btc-bitcoin")
 
-        coEvery { coinRepository.getBitcoinInfo() } returns Resource.Success(bitcoin)
+        coEvery { coinRepository.startBitcoinPolling(any()) } returns flowOf(Resource.Success(bitcoin))
 
         val observer = viewModel.viewState.test(this)
 
@@ -159,6 +159,7 @@ class MainViewModelTest {
 
         verify { router.navigateTo(Graph) }
         coVerify { coinRepository.setCurrentCoinId("btc-bitcoin") }
+        coVerify { coinRepository.startBitcoinPolling(any()) }
 
         observer.cancelAndRemoveRemainingEvents { events ->
             Assert.assertEquals(events, emptyList<MainViewModel.ViewState>())

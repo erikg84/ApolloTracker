@@ -1,7 +1,6 @@
 package com.example.apollotracker.viewmodel
 
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apollotracker.model.AltCoin
@@ -15,7 +14,6 @@ import com.example.apollotracker.store.StatefulStore
 import com.example.apollotracker.util.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Timer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,9 +25,6 @@ class AltcoinViewModel @Inject constructor(
 
     private val statefulStore: ModelStore<ViewState> = StatefulStore(ViewState(), viewModelScope)
     val viewState = statefulStore.state
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    var timer = Timer()
 
     init {
         pollAltcoinInfo()
